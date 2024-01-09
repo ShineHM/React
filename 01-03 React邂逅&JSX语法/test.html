@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title id="J_desktopTitle">支付宝</title>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta content="yes" name="apple-touch-fullscreen" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="white" name="apple-mobile-web-app-status-bar-style" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, minimal-ui" />
+    <meta name="data-aspm" content="a192" />
+    <link id="J_desktopIcon" sizes="114x114" rel="apple-touch-icon-precomposed" />
+    
+    <script>
+      var Base64 = function() {
+        var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        var _utf8_encode = function (string) {
+          string = string.replace(/\r\n/g,"\n");
+          var utftext = "";
+          for (var n = 0; n < string.length; n++) {
+            var c = string.charCodeAt(n);
+            if (c < 128) {
+              utftext += String.fromCharCode(c);
+            } else if((c > 127) && (c < 2048)) {
+              utftext += String.fromCharCode((c >> 6) | 192);
+              utftext += String.fromCharCode((c & 63) | 128);
+            } else {
+              utftext += String.fromCharCode((c >> 12) | 224);
+              utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+              utftext += String.fromCharCode((c & 63) | 128);
+            }
+          }
+          return utftext;
+        };
+        this.encode = function (input) {
+          var output = "";
+          var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+          var i = 0;
+          input = _utf8_encode(input);
+          while (i < input.length) {
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+            if (isNaN(chr2)) {
+              enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+              enc4 = 64;
+            }
+            output = output +
+            _keyStr.charAt(enc1) + _keyStr.charAt(enc2) +
+            _keyStr.charAt(enc3) + _keyStr.charAt(enc4);
+          }
+          return output;
+        };
+      };
+      var getQuery = function(url) {
+        var query = {};
+        var hashParts = url.split('#');
+        var urlParts = hashParts[0].split('?');
+        if (urlParts.length > 1) {
+          // 有query
+          var queryParts = urlParts[1].split('&');
+          for (var i = 0, len = queryParts.length; i < len; i++) {
+            var items = queryParts[i].split('=');
+            query[items[0]] = decodeURIComponent(items[1]);
+          }
+        }
+        return query;
+      };
+      var htmlEncode = function(myStr) {
+        myStr = myStr || '';
+        //myStr = myStr.replace(/&/g, "&amp;");
+        myStr = myStr.replace(/'/g, "&#39;");
+        myStr = myStr.replace(/"/g, "&quot;");
+        myStr = myStr.replace(/</g, "&lt;");
+        myStr = myStr.replace(/>/g, "&gt;");
+        myStr = myStr.replace(/\s/g, '&nbsp;');
+        return myStr;
+      };
+
+      var iOSversion = function() {
+        if (/iP(hone|od|ad)/.test(navigator.platform)) {
+          var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+          return [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)];
+        }
+      }
+
+      var base64 = new Base64();
+      var query = getQuery(location.href);
+      var { appId, appName, appIcon, appUrl, scheme, params } = query;
+      var sysVer = iOSversion();
+  
+      appName = htmlEncode(appName);
+      appIcon = htmlEncode(appIcon);
+    
+      if ((appId || scheme) && appName && appIcon) {
+        if (sysVer && sysVer[0] < 14) {
+          // 14 以下的版本走离线版
+          var htmlTpl = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title id=\"J_desktopTitle\">\u652F\u4ED8\u5B9D<\/title><meta content=\"yes\" name=\"apple-touch-fullscreen\"><meta content=\"yes\" name=\"apple-mobile-web-app-capable\"><meta content=\"white\" name=\"apple-mobile-web-app-status-bar-style\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui\"><meta name=\"data-aspm\" content=\"a192\"><link id=\"J_desktopIcon\" sizes=\"114x114\" rel=\"apple-touch-icon-precomposed\"><\/head><script>function request(e){var n=new XMLHttpRequest;n.open(e.method,e.url),n.send(null),e.success&&(n.onreadystatechange=function(){4===n.readyState&&(200!==n.status&&0!==n.status||e.success&&e.success(n.responseText))})}window.requestConfigEvent=new Event(\"requestConfig\"),request({method:\"get\",url:\"https:\/\/render.alipay.com\/p\/yuyan\/shortcut-config_shortcut-configs\/zh_CN.json\",success:function(e){try{window.miniInnerPageWhiteList=(JSON.parse(e).innerPage||[]).map(function(e){return e.appId})}catch(e){window.miniInnerPageWhiteList=[]}window.dispatchEvent(window.requestConfigEvent)}})<\/script><script>window._to={autoExpo:!0},document.documentElement.style.fontSize=100*document.documentElement.clientWidth\/375+\"px\"<\/script><script>!function(r){function n(t){if(a[t])return a[t].exports;var e=a[t]={exports:{},id:t,loaded:!1};return r[t].call(e.exports,e,e.exports,n),e.loaded=!0,e.exports}var a={};n.m=r,n.c=a,n.p=\"\",n(0)}([function(t,e){\"use strict\";!function(){if(!window.Tracert){for(var o={_isInit:!0,_readyToRun:[],_guid:function(){return\"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx\".replace(\/[xy]\/g,function(t){var e=16*Math.random()|0;return(\"x\"===t?e:3&e|8).toString(16)})},get:function(t){if(\"pageId\"!==t)return this[t];if(window._tracert_loader_cfg=window._tracert_loader_cfg||{},window._tracert_loader_cfg.pageId)return window._tracert_loader_cfg.pageId;var e=document.querySelectorAll(\"meta[name=data-aspm]\"),r=e&&e[0].getAttribute(\"content\"),n=document.body&&document.body.getAttribute(\"data-aspm\"),a=r&&n?r+\".\"+n+\"_\"+o._guid()+\"_\"+Date.now():\"-_\"+o._guid()+\"_\"+Date.now();return window._tracert_loader_cfg.pageId=a},call:function(){var e,r=arguments;try{e=[].slice.call(r,0)}catch(t){var n=r.length;e=[];for(var a=0;a<n;a++)e.push(r[a])}o.addToRun(function(){o.call.apply(o,e)})},addToRun:function(t){var e=t;\"function\"==typeof e&&(e._logTimer=new Date-0,o._readyToRun.push(e))}},t=[\"config\",\"logPv\",\"info\",\"err\",\"click\",\"expo\",\"pageName\",\"pageState\",\"time\",\"timeEnd\",\"parse\",\"checkExpo\",\"stringify\",\"report\",\"set\",\"before\"],e=0;e<t.length;e++){!function(t){o[t]=function(){var e,r=arguments;try{e=[].slice.call(r,0)}catch(t){var n=r.length;e=[];for(var a=0;a<n;a++)e.push(r[a])}e.unshift(t),o.addToRun(function(){o.call.apply(o,e)})}}(t[e])}window.Tracert=o}}()}])<\/script><script src=\"https:\/\/gw.alipayobjects.com\/as\/g\/component\/tracert\/3.1.2\/index.js\"><\/script><style>*{margin:0;padding:0}body,html{height:100%;width:100%;overflow:hidden;background:#f3f2f2;text-align:center;font-family:PingFangSC-Medium}.backguide{height:100%;width:100%}.backguide .enter{position:absolute;height:.44rem;width:3.43rem;background:#108ee9;border:0;font-size:.18rem;color:#fff;bottom:.52rem;left:.16rem;border-radius:.02rem}.backguide .tips{margin-top:1.29rem;font-size:.14rem;line-height:.2rem;color:#999}.backguide .icon{height:.71rem;width:.71rem;border-radius:.14rem}.backguide .appname{font-size:.18rem;line-height:.25rem;color:#333;margin-top:-.14rem}.main{color:#333;text-align:center}.subject{margin-top:.3rem;font-size:.2rem}.preview{margin-top:.36rem;position:relative}.preview .content{position:relative;margin:0 .55rem}.preview .bg{width:2.5rem;margin-left:.05rem;position:relative}.preview .icon{position:absolute;display:block;border-radius:21%}.preview .title{position:absolute;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.preview .icon.large{width:1.25rem;height:1.25rem;left:1.22rem;top:.42rem}.preview .title.large{width:1.5rem;left:1.13rem;top:1.7rem;font-size:.17rem}.preview .icon.small{width:.14rem;height:.14rem;left:.8rem;top:1.125rem}.preview .title.small{width:.16rem;left:.78rem;top:1.266rem;font-size:.025rem}.guide{width:100%;position:absolute;left:0;bottom:.3rem}.guide .content{position:relative;z-index:20;width:3.5rem;padding-top:.16rem;padding-bottom:.06rem;margin:0 auto;border-radius:.04rem;box-shadow:0 6px 15px rgba(0,0,0,.13);background:#fff;font-size:.14rem}.guide .tips{position:relative;z-index:20}.guide .icon{width:.2rem;height:.24rem;margin:0 .035rem .02rem;vertical-align:bottom}.guide .toolbar{width:100%;height:auto;margin-top:-.12rem;position:relative;z-index:10}.guide .arrow{width:.27rem;height:auto;position:absolute;left:50%;bottom:-.26rem;margin-left:-.135rem;z-index:10}.guide-v13{display:none}html.ios-v13,html.ios-v13 body{height:auto;overflow:auto}.ios-v13 .preview{margin:.36rem 0 .32rem}.ios-v13 .preview .content{font-size:0}.ios-v13 .guide{display:none}.ios-v13 .guide-v13{display:block}.guide-v13{margin:0 .25rem 0 .275rem;font-size:0;left:0}.guide-v13 .tips{font-size:.16rem;color:#333;letter-spacing:0;text-align:left;line-height:.225rem}.guide-v13 .tips label{color:#1677ff}.guide-v13 .toolbar{width:100%;margin:.14rem 0 .235rem}.guide-v13 .toolbar .action-sheet{margin-bottom:0}<\/style><body data-aspm=\"b15502\"><div id=\"B_container\" class=\"backguide\" style=\"display:none\"><div class=\"tips\">\u4F60\u5373\u5C06\u8FDB\u5165<\/div><img class=\"icon\" src=\"" + appIcon + "\"><div class=\"appname\">" + appName + "<\/div><button class=\"enter\" onclick=\"jumpSchema()\" data-aspm=\"c37816.d76317\" data-aspm-expo data-aspm-param=\"appId=" + appId + "\">\u7ACB\u5373\u8FDB\u5165<\/button><\/div><div class=\"main\" id=\"J_container\" style=\"display:none\"><div class=\"subject\" data-language=\"string-0\">\u6DFB\u52A0\u670D\u52A1\u5230\u684C\u9762<\/div><div class=\"preview\"><div class=\"content\"><img class=\"bg\" src=\"https:\/\/gw.alipayobjects.com\/zos\/rmsportal\/ceOiTFtaubdHkhSrNfPj.jpg\"> <img class=\"icon small\" src=\"" + appIcon + "\"> <img class=\"icon large\" src=\"" + appIcon + "\"><div class=\"title large\">" + appName + "<\/div><\/div><\/div><div class=\"guide\"><div class=\"content\"><p class=\"tips\">\u70B9\u51FB\u4E0B\u65B9\u5DE5\u5177\u680F\u4E0A\u7684<img class=\"icon\" src=\"https:\/\/gw.alipayobjects.com\/zos\/rmsportal\/XEbFrgamEdvSxVFOBeuZ.png\"><\/p><p class=\"tips\">\u5E76\u9009\u62E9<img class=\"icon\" src=\"https:\/\/gw.alipayobjects.com\/zos\/rmsportal\/IkKEhyTLQpYtqXMZBYtQ.png\">\u201C<strong>\u6DFB\u52A0\u5230\u4E3B\u5C4F\u5E55<\/strong>\u201D<\/p><img class=\"toolbar\" src=\"https:\/\/gw.alipayobjects.com\/zos\/rmsportal\/oFNuXVhPJYvBDJPXJTmt.jpg\"><\/div><img class=\"arrow\" src=\"https:\/\/gw.alipayobjects.com\/zos\/rmsportal\/FlBEnTRnlhMyLyVhlfZT.png\"><\/div><div class=\"guide-v13\"><p class=\"tips\"><label data-language=\"string-1\">\u7B2C\u4E00\u6B65<\/label><span data-language=\"string-2\">\uFF1A\u70B9\u51FB\u5E95\u90E8\u5DE5\u5177<\/span><\/p><img class=\"toolbar\" src=\"https:\/\/gw.alipayobjects.com\/mdn\/rms_b17773\/afts\/img\/A*x5gFQIzsNm8AAAAAAAAAAAAAARQnAQ\"><p class=\"tips\"><label data-language=\"string-3\">\u7B2C\u4E8C\u6B65<\/label><span data-language=\"string-4\">\uFF1A\u5728\u5F39\u51FA\u6846\u4E2D\u70B9\u51FB\u201C\u6DFB\u52A0\u5230\u4E3B\u5C4F\u5E55\u201D<\/span><\/p><img data-language=\"img-0\" class=\"toolbar action-sheet\" src=\"https:\/\/gw.alipayobjects.com\/mdn\/rms_b17773\/afts\/img\/A*8h3WTaVxiAAAAAAAAAAAAAAAARQnAQ\"><\/div><\/div><script>function jumpSchema(){window.location.href=window.AlipaySchema;window.Tracert.click(\"c37816.d76317\",{appId:'" + (appId || "") + "'})}function getIOSversion(){if(\/iP(hone|od|ad)\/.test(navigator.platform)){var e=navigator.appVersion.match(\/OS (\\d+)_(\\d+)_?(\\d+)?\/);return[parseInt(e[1],10),parseInt(e[2],10),parseInt(e[3]||0,10)]}}function matchZHSupport(e){e=e.toLowerCase();for(var t=[{support:[\"zh\",\"zh-chs\",\"zh-cn\",\"zh-sg\"],type:1},{support:[\"zh-cht\",\"zh-tw\"],type:2},{support:[\"zh-hk\",\"zh-mo\"],type:3}],a=0;a<t.length;a++){var n=t[a];if(-1<n.support.indexOf(e))return n.type}}function getLanguageType(){var e,t=!1,a=[];navigator.languages.length?a=navigator.languages:navigator.language&&a.push(navigator.language);for(var n=0;n<a.length;n++){var i=matchZHSupport(a[n]);if(\/^zh(-w+)?$\/.test(a[n])&&(t=!0),i){e=i;break}}return e||(!e&&t?1:4)}function changeLanguage(){var e=getLanguageType();if(1!==e){var t=document.querySelectorAll(\"[data-language]\"),i={2:{string:[\"\u6DFB\u52A0\u670D\u52D9\u5230\u684C\u9762\",\"\u7B2C\u4E00\u6B65\",\"\uFF1A\u9EDE\u64CA\u5E95\u90E8\u5DE5\u5177\",\"\u7B2C\u4E8C\u6B65\",\"\uFF1A\u5728\u5F48\u51FA\u6846\u4E2D\u9EDE\u64CA\u201C\u52A0\u5165\u4E3B\u756B\u9762\u201D\"],img:[\"https:\/\/gw.alipayobjects.com\/mdn\/rms_e73174\/afts\/img\/A*asvqT6J1hx0AAAAAAAAAAAAAARQnAQ\"]},3:{string:[\"\u6DFB\u52A0\u670D\u52D9\u5230\u684C\u9762\",\"\u7B2C\u4E00\u6B65\",\"\uFF1A\u9EDE\u64CA\u5E95\u90E8\u5DE5\u5177\",\"\u7B2C\u4E8C\u6B65\",\"\uFF1A\u5728\u5F48\u51FA\u6846\u4E2D\u9EDE\u64CA\u201C\u52A0\u81F3\u4E3B\u756B\u9762\u201D\"],img:[\"https:\/\/gw.alipayobjects.com\/mdn\/rms_e73174\/afts\/img\/A*ulbpQIzqgk4AAAAAAAAAAAAAARQnAQ\"]},4:{string:[\"Add to Home Screen\",\"Step1\",\": Tap the Share icon at the bottom\",\"Step2\",\": Tap Add to Home Screen from the menu\"],img:[\"https:\/\/gw.alipayobjects.com\/mdn\/rms_e73174\/afts\/img\/A*-yGGRZ_z950AAAAAAAAAAAAAARQnAQ\"]}}[e];t.forEach(function(e){var t=e.dataset.language||\"\",a=(t=t.split(\"-\"))[0],n=t[1];\"string\"===a?e.innerText=i[a][n]:\"img\"===a&&(e.src=i[a][n])})}}var appId='" + (appId || "") + "',appUrl='" + (appUrl || "") + "',scheme='" + (scheme || "") + "',params='" + (params || "") + "',href=\"\",v=getIOSversion();function getAlipaySchema(){var e=\"\";href=scheme||(e=!params&&window.miniInnerPageWhiteList&&window.miniInnerPageWhiteList.length&&-1<window.miniInnerPageWhiteList.indexOf(appId)?appUrl?\"&page=\"+encodeURIComponent(appUrl):\"\":appUrl?\"&url=\"+encodeURIComponent(appUrl):\"\",\"alipays:\/\/platformapi\/startapp?appId=\"+appId+\"&chInfo=ch_desktop\"+e),window.AlipaySchema=href}v&&13<=v[0]&&(document.documentElement.className=\"ios-v13\",changeLanguage()),getAlipaySchema(),window.addEventListener(\"requestConfig\",function(){getAlipaySchema(),window.navigator.standalone&&(window.location.href=window.AlipaySchema)}),window.navigator.standalone?(13<=v[0]&&(document.getElementById(\"B_container\").style.display=\"block\",document.getElementById(\"B_icon\").setAttribute(\"src\",appIcon),document.getElementById(\"B_appname\").textContent=appName,window.Tracert.call(\"expoCheck\")),miniInnerPageWhiteList?window.location.href=window.AlipaySchema:setTimeout(function(){window.location.href=window.AlipaySchema},1500)):(document.getElementById(\"J_container\").style.display=\"block\",document.getElementById(\"J_desktopTitle\").textContent=\"" + appName + "\",document.getElementById(\"J_desktopIcon\").setAttribute(\"href\",\"" + appIcon + "\")),document.addEventListener(\"visibilitychange\",function(){\"visible\"===document.visibilityState&&jumpSchema()})<\/script><\/body><\/html>";;
+          var base64Tpl = base64.encode(htmlTpl);
+          location.href = 'data:text/html;base64,' + base64Tpl;
+        }
+        //} else { // iOS 13 以上用在线页面当快捷方式，解决 -1 屏搜索点击不动的兼容性问题
+        //  location.href = '' + '?appId=' + appId + '&scheme=' + scheme + '&appUrl=' + appUrl + '&appName=' + appName + '&appIcon=' + appIcon;
+        //}
+      } else {
+        alert('参数错误');
+      }
+    </script>
+    <script>
+      function request(opts) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(opts.method, opts.url);
+        xhr.send(null);
+        if (opts.success) {
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200 || xhr.status === 0) {
+                if (opts.success) {
+                  opts.success(xhr.responseText);
+                }
+              }
+            }
+          };
+        }
+      }
+      window.requestConfigEvent = new Event('requestConfig');
+      request({
+        method: 'get',
+        url: 'https://render.alipay.com/p/yuyan/shortcut-config_shortcut-configs/zh_CN.json',
+        success: function(res) {
+          try {
+            window.miniInnerPageWhiteList = (JSON.parse(res).innerPage || []).map(function(item) {
+              return item.appId
+            });
+          } catch(e) {
+            window.miniInnerPageWhiteList = [];
+          }
+          window.dispatchEvent(window.requestConfigEvent);
+        }
+      });
+    </script>
+    <script>
+      window._to = { autoExpo: true };
+      document.documentElement.style.fontSize = document.documentElement.clientWidth * 100 / 375 + 'px';
+    </script>
+    <script>!function(modules){function __webpack_require__(moduleId){if(installedModules[moduleId])return installedModules[moduleId].exports;var module=installedModules[moduleId]={exports:{},id:moduleId,loaded:!1};return modules[moduleId].call(module.exports,module,module.exports,__webpack_require__),module.loaded=!0,module.exports}var installedModules={};return __webpack_require__.m=modules,__webpack_require__.c=installedModules,__webpack_require__.p="",__webpack_require__(0)}([function(module,exports){"use strict";!function(){if(!window.Tracert){for(var Tracert={_isInit:!0,_readyToRun:[],_guid:function(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(c){var r=16*Math.random()|0,v="x"===c?r:3&r|8;return v.toString(16)})},get:function(key){if("pageId"===key){if(window._tracert_loader_cfg=window._tracert_loader_cfg||{},window._tracert_loader_cfg.pageId)return window._tracert_loader_cfg.pageId;var metaa=document.querySelectorAll("meta[name=data-aspm]"),spma=metaa&&metaa[0].getAttribute("content"),spmb=document.body&&document.body.getAttribute("data-aspm"),pageId=spma&&spmb?spma+"."+spmb+"_"+Tracert._guid()+"_"+Date.now():"-_"+Tracert._guid()+"_"+Date.now();return window._tracert_loader_cfg.pageId=pageId,pageId}return this[key]},call:function(){var argsList,args=arguments;try{argsList=[].slice.call(args,0)}catch(ex){var argsLen=args.length;argsList=[];for(var i=0;i<argsLen;i++)argsList.push(args[i])}Tracert.addToRun(function(){Tracert.call.apply(Tracert,argsList)})},addToRun:function(_fn){var fn=_fn;"function"==typeof fn&&(fn._logTimer=new Date-0,Tracert._readyToRun.push(fn))}},fnlist=["config","logPv","info","err","click","expo","pageName","pageState","time","timeEnd","parse","checkExpo","stringify","report","set","before"],i=0;i<fnlist.length;i++){var fn=fnlist[i];!function(fn){Tracert[fn]=function(){var argsList,args=arguments;try{argsList=[].slice.call(args,0)}catch(ex){var argsLen=args.length;argsList=[];for(var i=0;i<argsLen;i++)argsList.push(args[i])}argsList.unshift(fn),Tracert.addToRun(function(){Tracert.call.apply(Tracert,argsList)})}}(fn)}window.Tracert=Tracert}}()}]);</script>
+    <script src="https://gw.alipayobjects.com/as/g/component/tracert/3.1.2/index.js"></script>
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+        }
+        html,body{
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+          background: #F3F2F2;
+          text-align: center;
+          font-family: PingFangSC-Medium;
+        }
+        .backguide {
+          height: 100%;
+          width: 100%;
+        }
+        .backguide .enter {
+          position: absolute;
+          height: 0.44rem;
+          width: 3.43rem;
+          background: #108EE9;
+          border: 0;
+          font-size: 0.18rem;
+          color: white;
+          bottom: 0.52rem;
+          left: 0.16rem;
+          border-radius: 0.02rem;
+        }
+        .backguide .tips {
+          margin-top: 1.29rem;
+          font-size: 0.14rem;
+          line-height: 0.2rem;
+          color: #999999;
+        }
+        .backguide .icon {
+          height: 0.71rem;
+          width: 0.71rem;
+          border-radius: 0.14rem;
+        }
+        .backguide .appname {
+          font-size: 0.18rem;
+          line-height: 0.25rem;
+          color: #333333;
+          margin-top: -0.14rem;
+        }
+        .main {
+          color: #333;
+          text-align: center;
+        }
+        .subject {
+          margin-top: .3rem;
+          font-size: 0.2rem;
+        }
+
+        .preview {
+          margin-top:0.36rem;
+          position: relative;
+        }
+        .preview .content {
+          position: relative;
+          margin: 0 0.55rem;
+        }
+        .preview .bg {
+          width: 2.5rem;
+          margin-left: 0.05rem;
+          position: relative;
+        }
+        .preview .icon {
+          position: absolute;
+          display: block;
+          border-radius: 21%;
+        }
+        .preview .title {
+          position: absolute;
+          text-align: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .preview .icon.large {
+          width: 1.25rem;
+          height: 1.25rem;
+          left: 1.22rem;
+          top: .42rem
+        }
+        .preview .title.large {
+          width: 1.5rem;
+          left: 1.13rem;
+          top: 1.70rem;
+          font-size: 0.17rem;
+        }
+        .preview .icon.small {
+          width: 0.14rem;
+          height: 0.14rem;
+          left: 0.8rem;
+          top: 1.125rem;
+        }
+        .preview .title.small {
+          width: 0.16rem;
+          left: 0.78rem;
+          top: 1.266rem;
+          font-size: 0.025rem;
+        }
+
+        .guide {
+          width: 100%;
+          position: absolute;
+          left: 0;
+          bottom: .30rem;
+        }
+        .guide .content {
+          position: relative;
+          z-index: 20;
+          width: 3.50rem;
+          padding-top: 0.16rem;
+          padding-bottom: 0.06rem;
+          margin: 0 auto;
+          border-radius: 0.04rem;
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.13);
+          background: #fff;
+          font-size: .14rem;
+        }
+        .guide .tips {
+          position: relative;
+          z-index: 20;
+        }
+        .guide .icon {
+          width: 0.20rem;
+          height: 0.24rem;
+          margin: 0 0.035rem 0.02rem;
+          vertical-align: bottom;
+        }
+        .guide .toolbar {
+          width: 100%;
+          height: auto;
+          margin-top: -0.12rem;
+          position: relative;
+          z-index: 10;
+        }
+        .guide .arrow {
+          width: 0.27rem;
+          height: auto;
+          position: absolute;
+          left: 50%;
+          bottom: -0.26rem;
+          margin-left: -0.135rem;
+          z-index: 10;
+        }
+
+        .guide-v13 {
+          display: none;
+        }
+
+        html.ios-v13, html.ios-v13 body {
+          height: auto;
+          overflow: auto;
+        }
+        .ios-v13 .preview {
+          margin: 0.36rem 0 0.32rem;
+        }
+        .ios-v13 .preview .content{
+          font-size: 0;
+        }
+        .ios-v13 .guide {
+          display: none;
+        }
+        .ios-v13 .guide-v13 {
+          display: block;
+        }
+        .guide-v13 {
+          margin: 0 0.25rem 0 0.275rem;
+          font-size: 0;
+          left: 0;
+        }
+        .guide-v13 .tips {
+          font-size: .16rem;
+          color: #333333;
+          letter-spacing: 0;
+          text-align: left;
+          line-height: .225rem;
+        }
+        .guide-v13 .tips label {
+          color: #1677FF;
+        }
+        .guide-v13 .toolbar {
+          width: 100%;
+          margin: 0.14rem 0 0.235rem;
+        }
+        .guide-v13 .toolbar .action-sheet {
+          margin-bottom: 0;
+        }
+    </style>
+
+  </head>
+  <body data-aspm="b15502">
+    <div id="B_container" class="backguide" style="display: none;">
+      <div class="tips">你即将进入</div>
+      <img id="B_icon" class="icon" src=""></img>
+      <div id="B_appname" class="appname">支付宝</div>
+      <button class="enter" onclick="jumpSchema()" data-aspm="c37816.d76317" data-aspm-expo data-aspm-param="appId=${appId}">立即进入</button>
+    </div>
+    <div class="main" id="J_container" style="display: none;">
+      <div class="subject" data-language="string-0">添加服务到桌面</div>
+      <div class="preview">
+        <div class="content">
+          <img class="bg" src="https://gw.alipayobjects.com/zos/rmsportal/ceOiTFtaubdHkhSrNfPj.jpg">
+          <img id="J_iconsmall" class="icon small" src="https://app-i3-test.cangoonline.net/2023/09/3d02881d22704a479bf4cfb9992b675f.jpg">
+          <img id="J_iconlarge" class="icon large" src="https://app-i3-test.cangoonline.net/2023/09/3d02881d22704a479bf4cfb9992b675f.jpg">
+          <div id="J_appname" class="title large">支付宝</div>
+        </div>
+      </div>
+      <div class="guide">
+        <div class="content">
+          <p class="tips">点击下方工具栏上的<img class="icon" src="https://gw.alipayobjects.com/zos/rmsportal/XEbFrgamEdvSxVFOBeuZ.png"></p>
+          <p class="tips">并选择<img class="icon" src="https://gw.alipayobjects.com/zos/rmsportal/IkKEhyTLQpYtqXMZBYtQ.png">“<strong>添加到主屏幕</strong>”</p>
+          <img class="toolbar" src="https://gw.alipayobjects.com/zos/rmsportal/oFNuXVhPJYvBDJPXJTmt.jpg">
+        </div>
+        <img class="arrow" src="https://gw.alipayobjects.com/zos/rmsportal/FlBEnTRnlhMyLyVhlfZT.png">
+      </div>
+      <div class="guide-v13">
+        <p class="tips"><label data-language="string-1">第一步</label><span data-language="string-2">：点击底部工具</span></p>
+        <img class="toolbar" src="https://gw.alipayobjects.com/mdn/rms_b17773/afts/img/A*x5gFQIzsNm8AAAAAAAAAAAAAARQnAQ" />
+        <p class="tips"><label data-language="string-3">第二步</label><span data-language="string-4">：在弹出框中点击“添加到主屏幕”</span></p>
+        <img data-language="img-0" class="toolbar action-sheet" src="https://gw.alipayobjects.com/mdn/rms_b17773/afts/img/A*8h3WTaVxiAAAAAAAAAAAAAAAARQnAQ" />
+      </div>
+    </div>
+    <script>
+      function jumpSchema() {
+        window.location.href = window.AlipaySchema;
+        var appId = window.AlipayShortCutAppId;
+        window.Tracert.click('c37816.d76317', {appId: appId});
+      }
+      function getQueryParams(url) {
+        var query = {};
+        var hashParts = url.split('#');
+        var urlParts = hashParts[0].split('?');
+        if (urlParts.length > 1) {
+          // 有query
+          var queryParts = urlParts[1].split('&');
+          for (var i = 0, len = queryParts.length; i < len; i++) {
+            var items = queryParts[i].split('=');
+            query[items[0]] = decodeURIComponent(items[1]);
+          }
+        }
+        return query;
+      };
+      function getIOSversion() {
+        if (/iP(hone|od|ad)/.test(navigator.platform)) {
+          var v = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);
+          return [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)];
+        }
+      }
+
+      function matchZHSupport(language) {
+        language = language.toLowerCase();
+        var zhSupportList = [
+          { support: ['zh', 'zh-chs', 'zh-cn', 'zh-sg'], type: 1 },
+          { support: ['zh-cht', 'zh-tw'], type: 2 },
+          { support: ['zh-hk', 'zh-mo'], type: 3 },
+        ];
+        for (var i = 0; i < zhSupportList.length; i++) {
+          var supportInfo = zhSupportList[i];
+          if (supportInfo.support.indexOf(language) > -1) {
+            return supportInfo.type;
+          }
+        }
+      }
+      /**
+       * 1. 简体中文 zh-CHS zh-CN zh-SG zh >> fallback -> zh
+       * 2. 繁体中文 | 繁体中文（台湾）>> fallback -> zh
+       * 3. 繁体中文（澳门）| 繁体中文（香港）>> fallback -> zh
+       * 4. 英文
+       */
+      function getLanguageType() {
+        var languageType;
+        var zhFallback = false;
+        var languageList = [];
+        if (navigator.languages.length) {
+          languageList = navigator.languages;
+        } else if (navigator.language) {
+          languageList.push(navigator.language);
+        }
+
+        for (var i = 0; i < languageList.length; i++) {
+          var type = matchZHSupport(languageList[i]);
+          // 避免遗漏 'zh' 开头的都 fallback 到简体中文
+          if (/^zh(-\w+)?$/.test(languageList[i])) {
+            zhFallback = true;
+          }
+          if (type) {
+            languageType = type;
+            break;
+          }
+        }
+        // zhSupportList 匹配到了类型
+        if (languageType) return languageType;
+        // zhSupportList 没匹配到上但是有 zh 开头的语言类型
+        if (!languageType && zhFallback) return 1;
+        // 其他语言显示英语
+        return 4;
+      }
+
+      function changeLanguage() {
+        var languagesPkg = {
+          "2": {
+            string: [
+              "添加服務到桌面",
+              "第一步",
+              "：點擊底部工具",
+              "第二步",
+              "：在彈出框中點擊“加入主畫面”"
+            ],
+            img: ["https://gw.alipayobjects.com/mdn/rms_e73174/afts/img/A*asvqT6J1hx0AAAAAAAAAAAAAARQnAQ"],
+          },
+          "3": {
+            string: [
+              "添加服務到桌面",
+              "第一步",
+              "：點擊底部工具",
+              "第二步",
+              "：在彈出框中點擊“加至主畫面”"
+            ],
+            img: ["https://gw.alipayobjects.com/mdn/rms_e73174/afts/img/A*ulbpQIzqgk4AAAAAAAAAAAAAARQnAQ"],
+          },
+          "4": {
+            string: [
+              "Add to Home Screen",
+              "Step1",
+              ": Tap the Share icon at the bottom",
+              "Step2",
+              ": Tap Add to Home Screen from the menu",
+            ],
+            img: ["https://gw.alipayobjects.com/mdn/rms_e73174/afts/img/A*-yGGRZ_z950AAAAAAAAAAAAAARQnAQ"],
+          },
+        };
+        var languageType = getLanguageType();
+        if (languageType === 1) return;
+        var replaceNodes = document.querySelectorAll('[data-language]');
+        var languagePkg = languagesPkg[languageType];
+        replaceNodes.forEach(function(node) {
+          var data = node.dataset.language || '';
+          data = data.split('-');
+          var type = data[0];
+          var id = data[1];
+          if (type === 'string') {
+            node.innerText = languagePkg[type][id];
+          } else if (type === 'img') {
+            node.src = languagePkg[type][id];
+          }
+        });
+      }
+
+      var query = getQueryParams(location.href);
+      var { appId = "", appName, appIcon, appUrl = "", scheme = "", autoJump = "0", params = "" } = query;
+      window.AlipayShortCutAppId = appId;
+      var href = '';
+      var v = getIOSversion();
+
+      if (v && v[0] >= 13) {
+        document.documentElement.className = 'ios-v13';
+        // 只有新版才显示不同语言
+        changeLanguage();
+      }
+
+      function getAlipaySchema() {
+        var redirectAppUrl = '';
+        if (scheme) {
+          href = scheme;
+        } else {
+          if (
+            !params
+            && window.miniInnerPageWhiteList
+            && window.miniInnerPageWhiteList.length
+            && window.miniInnerPageWhiteList.indexOf(appId) > -1
+          ) {
+            redirectAppUrl = appUrl ? '&page=' + encodeURIComponent(appUrl) : '';
+          } else {
+            redirectAppUrl = appUrl ? '&url=' + encodeURIComponent(appUrl) : '';
+          }
+          href = 'alipays://platformapi/startapp?appId=' + appId + '&chInfo=ch_desktop' + redirectAppUrl;
+        }
+
+        window.AlipaySchema = href;
+      }
+
+      getAlipaySchema();
+
+      window.addEventListener('requestConfig', function() {
+        getAlipaySchema();
+        if (window.navigator.standalone) {
+          window.location.href = window.AlipaySchema;
+        }
+      });
+
+      if (window.navigator.standalone) {
+        if (v[0] >= 13) {
+          document.getElementById('B_container').style.display = 'block';
+          document.getElementById('B_icon').setAttribute('src', appIcon);
+          document.getElementById('B_appname').textContent = appName;
+          window.Tracert.call('expoCheck');
+        }
+        if (miniInnerPageWhiteList) {
+          window.location.href = window.AlipaySchema;
+        } else {// 1.5 秒后不管接口是否成功直接跳
+          setTimeout(function() {
+            window.location.href = window.AlipaySchema;
+          }, 1500);
+        }
+      } else {
+        document.getElementById('J_container').style.display = 'block';
+        document.getElementById('J_desktopTitle').textContent = appName;
+        document.getElementById('J_desktopIcon').setAttribute('href', appIcon);
+        document.getElementById('J_iconsmall').setAttribute('src', appIcon);
+        document.getElementById('J_iconlarge').setAttribute('src', appIcon);
+        document.getElementById('J_appname').textContent = appName;
+      }
+
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && autoJump === '1') {
+          jumpSchema();
+        }
+      });
+    </script>
+  </body>
+</html>

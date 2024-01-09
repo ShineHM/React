@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>计数器</title></title>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="./lib/babel.js"></script>
+  <script src="./lib/react.js"></script>
+  <script src="./lib/react-dom.js"></script>
+
+  <script type="text/babel">
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    class App extends React.Component{
+      constructor() {
+        super()
+        this.state = {
+          num: 100
+        }
+      }
+      render() {
+        return(
+          <div>
+            <h4>{this.state.num}</h4>
+            <button onClick={this.up.bind(this)}>+1</button>
+            <button onClick={this.down.bind(this)}>-1</button>
+          </div>
+        )
+      }
+      up() {
+        this.setState({num: this.state.num+1})
+      }
+      down() {
+        this.setState({num: this.state.num-1})
+      }
+    }
+
+    root.render(<App />)
+  </script>
+</body>
+</html>

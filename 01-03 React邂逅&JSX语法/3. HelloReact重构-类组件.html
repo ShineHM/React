@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+  <!-- cdn引入 crossorigin解决跨域-->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- babel引入 -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <script type="text/babel">
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    // let message = 'Hello World'
+    // function btnClick() {
+    //   message = 'Hello React'
+    //   rootRender() // 修改react不会自动重新刷新页面需要手动修改
+    // }
+    // rootRender() // 函数有空间提升
+    // function rootRender() {
+    //   root.render(
+    //     <div>
+    //       <h2>{message}</h2>
+    //       <button onClick={btnClick}>修改文本</button>
+    //     </div>
+    //   )
+    // }
+
+    /* 使用类组件方式重构 */
+    class App extends React.Component {
+      constructor() {
+        super()
+        this.state = {
+          message: 'Hello World'
+        }
+        // 另一种写法提前给方法绑定this
+        // this.btnClick = this.btnClick.bind(this)
+      }
+      btnClick() {
+        console.log(this); // undefined 因为babel转换
+        // 修改message值，自动执行render函数
+        this.setState({message: 'Hello React'})
+        // 现在这个this不一定代表这个组件实例
+      }
+      render() {
+        return(
+          <div>
+            <h2>{this.state.message}</h2>
+            <button onClick={this.btnClick.bind(this)}>修改文本</button>  
+          </div>
+        )
+        /* bind（this）表示把render的this绑定过this，都是组件实例 错误写法：表示方法的调用，this.btnClick()默认返回undefined，把undefined绑定给onClick肯定报错   <button onClick={this.btnClick()}>修改文本</button> */
+      }
+    }
+    /* const app = new App()
+    const foo = app.btnClick
+    foo() // 这里this是默认绑定，默认指向window，但严格模式下指向undefined，es6 class类定义的默认是严格模式，babel转换默认undefined
+    function fo() {
+      console.log(this); // 这里this指向undefined，因为用了babel，关闭babel指向window
+    }
+    fo() */
+    root.render(<App />) // app根组件
+  </script>
+</body>
+</html>

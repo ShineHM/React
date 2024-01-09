@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSX语法相关</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <style>
+      .active {
+        border: 1px red solid;
+      }
+    </style>
+
+    <script src="./lib/babel.js"></script>
+    <script src="./lib/react.js"></script>
+    <script src="./lib/react-dom.js"></script>
+
+    <script type="text/babel">
+      // 1.定义App根组件
+      class App extends React.Component {
+        constructor() {
+          super();
+          this.state = {
+            message: "Hello React",
+
+            // JSX中String/Number/Array可以直接展示
+            a: "11",
+            b: 222,
+            c: ["aa", "bb"],
+
+            // JSX中null/undefined/Boolean内容为空，若展示需要转化为字符串
+            aa: null,
+            bb: undefined,
+            cc: true,
+
+            // JSX中对象不能作为子元素
+            obj: { name: "哈哈哈" },
+
+            currentIndex: 0,
+
+            isHave: true,
+            baidu: "https://www.baidu.com",
+            style1: { color: "red" },
+
+            list: [
+              { id: 11, name: "哈哈", score: 90 },
+              { id: 12, name: "啦啦", score: 78 },
+              { id: 13, name: "哒哒", score: 65 },
+              { id: 14, name: "你你", score: 59 },
+              { id: 15, name: "塔塔", score: 73 },
+            ],
+          };
+        }
+        render() {
+          const { message, list } = this.state;
+          const { a, b, c } = this.state;
+          const { aa, bb, cc } = this.state;
+          const { obj } = this.state;
+          const { currentIndex } = this.state;
+          const { isHave, baidu, style1 } = this.state;
+          const className1 = `aa bb ${isHave && a}`;
+          const className2 = ["aa", "bb"];
+          if (isHave) className2.push(a);
+          // 基本使用
+          // return (
+          //   // JSX只有一个根元素
+          //   <div>
+          //     {/* JSX注释：渲染 */}
+
+          //     <h2>{message}</h2>
+          //     <h2>{a}</h2>
+          //     <h2>{b}</h2>
+          //     <h2>{c}</h2>
+          //     <h2>{aa}</h2>
+          //     <h2>{bb}</h2>
+          //     <h2>{cc}</h2>
+          //     {/* null和undefined没有toString方法,可以使用String(aa)和bb+'' */}
+          //     <h2>{String(aa)}</h2>
+          //     <h2>{bb + ""}</h2>
+          //     <h2>{cc.toString()}</h2>
+          //     {/* 对象会报错：Objects are not valid as a React child (found: object with keys {name}). If you meant to render a collection of children, use an array instead. */}
+          //     {/* <h2>{obj}</h2> */}
+          //     {/* JSX可以嵌入表达式比如电影列表例子/三元表达式/执行函数 */}
+          //     <h2>{isHave ? "有好事" : "没好事"}</h2>
+          //     <h2>{this.getData()}</h2>
+          //     <a href={baidu}>{this.getData()}</a>
+
+          //     {/* 绑定class */}
+          //     {/* <h2 class={`aa bb ${a}`}>{this.getData()}</h2> 报错react-dom.js:73 Warning: Invalid DOM property `class`. Did you mean `className`?*/}
+          //     <h2 className={`aa bb ${isHave && a}`}>{this.getData()}</h2>
+          //     <h2 className={className1}>{this.getData()}</h2>
+          //     <h2 className={className2.join(" ")}>{this.getData()}</h2>
+          //     {/* 还有一种就是使用第三方库classnames -> npm install classnames */}
+
+          //     {/* 绑定style */}
+          //     <h2 style={{ color: "red" }}>{style1}</h2>
+          //     <h2 style={style1}>style </h2>
+
+          //   </div>
+          // );
+
+          // this绑定 第一种参考计数器
+          // return (
+          //   <div>
+          //     {/* 第二种绑定箭头函数 */}
+          //     <button onClick={this.click1}>{message}</button>
+          //     {/* 第三种绑定（推荐掌握） */}
+          //     <button onClick={(e) => this.click2(e, 11)}>{message}</button>
+          //   </div>
+          // );
+
+          // 条件渲染两种实现
+          let showEle = null;
+          if (isHave) {
+            showEle = <h1>条件渲染1</h1>;
+          } else {
+            showEle = <h2>条件渲染2</h2>;
+          }
+          // return <div>{showEle}</div>;
+          // return <div>{isHave ? <h1>条件渲染1</h1> : <h2>条件渲染2</h2>}</div>;
+          // return <div>{isHave && <h1>条件渲染1</h1>}</div>;
+          // return (
+          //   <div>
+          //     {isHave && <h1>条件渲染1</h1>}
+          //     <button onClick={() => this.changeIsHave()}>切换</button>
+          //   </div>
+          // );
+
+          // v-show效果
+          // return (
+          //   <div>
+          //     <h1 style={{ display: isHave ? "block" : "none" }}>
+          //       条件渲染v-show
+          //     </h1>
+          //     <button onClick={() => this.changeIsHave()}>切换</button>
+          //   </div>
+          // );
+
+          // 列表渲染
+          // const ele = list
+          //   .filter((f) => f.score > 70)
+          //   .slice(0, 2)
+          //   .map((m) => {
+          //     return (
+          //       <div key={m.score}>
+          //         <h1>学号：{m.id}</h1>
+          //         <h2>分数：{m.score}</h2>
+          //         <h3>名字：{m.name}</h3>
+          //       </div>
+          //     );
+          //   });
+          return (
+            <div>
+              {/* ele */}
+              {list
+                .filter((f) => f.score > 70)
+                .slice(0, 2)
+                .map((m, index) => {
+                  return (
+                    <div
+                      key={m.id}
+                      className={currentIndex == index && "active"}
+                      onClick={(e) => this.changeIndex(index)}
+                    >
+                      {/* 必须有一个包裹 */}
+                      <h1>学号：{m.id}</h1>
+                      <h2>名字：{m.name}</h2>
+                      <h3>分数：{m.score}</h3>
+                    </div>
+                  );
+                })}
+            </div>
+          );
+        }
+        click1 = () => {
+          console.log("click1", this);
+          this.setState({ message: "hello1" });
+        };
+        click2 = (e, num) => {
+          console.log("click1", this, e, num);
+          this.setState({ message: "hello2" });
+        };
+        changeIsHave() {
+          this.setState({ isHave: !this.state.isHave });
+        }
+        changeIndex(currentIndex) {
+          this.setState({
+            currentIndex,
+          });
+        }
+        getData() {
+          return !this.state.isHave ? "有好事" : "没好事";
+        }
+      }
+      // 创建root并渲染App组件
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>

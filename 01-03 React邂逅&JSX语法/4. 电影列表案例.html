@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>电影列表</title>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="./lib/react.js"></script>
+  <script src="./lib/react-dom.js"></script>
+  <script src="./lib/babel.js"></script>
+
+  <script type="text/babel">
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    class App extends React.Component{
+      constructor() {
+        super()
+        this.state = {
+          movies: ['星际穿越', '消失的她', '流浪地球', '看不见的客人', '怦然心动']
+        }
+      }
+      render() {
+        // 方法一
+        let list = []
+        /* for(let m = 0; m < this.state.movies.length; m++) {
+          list.push(<li>{this.state.movies[m]}</li>)
+        } */
+        // 方法二
+        /* list = this.state.movies.map(m => <li key={m}>{m}</li>) */
+        return(
+          <ul>
+            {this.state.movies.map(m => <li key={m}>{m}</li>)}
+          </ul>
+        )
+      }
+    }
+    root.render(<App />)
+  </script>
+</body>
+</html>

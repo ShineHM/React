@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+  <!-- cdn引入 crossorigin解决跨域-->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- babel引入 -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <script type="text/babel">
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    let message = 'Hello World'
+    function btnClick() {
+      message = 'Hello React'
+      rootRender() // 修改react不会自动重新刷新页面需要手动修改
+    }
+    rootRender() // 函数有空间提升
+    function rootRender() {
+      root.render(
+        <div>
+          <h2>{message}</h2>
+          <button onClick={btnClick}>修改文本</button>
+        </div>
+      )
+    }
+    
+  </script>
+</body>
+</html>
